@@ -26,4 +26,4 @@ def plot_contrast_strech_image(image_path):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-plot_contrast_strech_image('./images/jpegImages/1-15.tiff')
+plot_contrast_strech_image('../images/ctisus/ctisusTiff/adrenal_1-07.tiff')

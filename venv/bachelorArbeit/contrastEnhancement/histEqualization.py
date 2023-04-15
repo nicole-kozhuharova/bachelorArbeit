@@ -4,20 +4,15 @@ from plotImages import plotImage
 
 def plot_histogram_equalized_image(image_path):
     # read the image
-    img = cv2.imread(image_path, 0)
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
     # perform histogram equalization
     equ = cv2.equalizeHist(img)
 
-    # display the original and equalized images
-    # plt.subplot(121), plt.imshow(img, cmap='gray')
-    # plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-    # plt.subplot(122), plt.imshow(equ, cmap='gray')
-    # plt.title('Equalized Image'), plt.xticks([]), plt.yticks([])
     # plt.show()
     plotImage(img, equ)
 
-plot_histogram_equalized_image('../images/jpegImages/1-15.tiff')
+plot_histogram_equalized_image('../images/jpegImages/pet-1-01.tiff')
 
 #In this example, we use the OpenCV library to read the input image
 # and perform histogram equalization using the cv2.equalizeHist() function.
