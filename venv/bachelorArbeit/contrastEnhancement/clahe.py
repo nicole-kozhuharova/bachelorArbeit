@@ -2,7 +2,7 @@ import cv2
 from plotImages import plotImage
 
 # Load the image in grayscale
-img = cv2.imread('../images/ctisus/ctisusTiff/adrenal_1-07.tiff', 0)
+img = cv2.imread('../images/ctisus/ctisusTiff/adrenal_1-01.tiff', 0)
 
 # Create a CLAHE object with specified parameters
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from plotImages import plotImage
 
 def multiscale_retinex(image, sigma_list):
     # Create a copy of the image
@@ -24,12 +25,10 @@ def multiscale_retinex(image, sigma_list):
 
 
 # Load an image
-img = cv2.imread("../images/ctisus/ctisusTiff/adrenal_1-07.tiff")
+img = cv2.imread("../images/ctisus/ctisusTiff/adrenal_1-01.tiff")
 
 # Apply Multiscale Retinex with a list of sigma values
 img_msr = multiscale_retinex(img, [15, 80, 160])
 
 # Display the original and enhanced images
-cv2.imshow("Original Image", img)
-cv2.imshow("Enhanced Image", img_msr)
-cv2.waitKey(0)
+plotImage(img, img_msr)

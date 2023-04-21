@@ -12,7 +12,7 @@ def plot_histogram_equalized_image(image_path):
     # plt.show()
     plotImage(img, equ)
 
-plot_histogram_equalized_image('../images/jpegImages/pet-1-01.tiff')
+plot_histogram_equalized_image('../images/ctisus/ctisusTiff/adrenal_1-01.tiff')
 
 #In this example, we use the OpenCV library to read the input image
 # and perform histogram equalization using the cv2.equalizeHist() function.

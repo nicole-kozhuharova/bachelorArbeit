@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from plotImages import plotImage
 
 def plot_contrast_strech_image(image_path):
 
@@ -21,9 +22,7 @@ def plot_contrast_strech_image(image_path):
     stretched_img = stretched_img.astype(np.uint8)
 
     # Display the original and contrast-stretched images
-    cv2.imshow('Original Image', img)
-    cv2.imshow('Contrast-Stretched Image', stretched_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    plotImage(img, stretched_img)
 
-plot_contrast_strech_image('../images/ctisus/ctisusTiff/adrenal_1-07.tiff')
+
+plot_contrast_strech_image('../images/ctisus/ctisusTiff/adrenal_1-01.tiff')

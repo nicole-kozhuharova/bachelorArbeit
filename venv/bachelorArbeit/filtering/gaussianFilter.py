@@ -5,7 +5,7 @@ from PIL import Image
 from plotImages import plotImage
 
 # Load the image
-img = np.array(Image.open("../images/ctisus/ctisusTiff/adrenal_1-07.tiff"))
+img = np.array(Image.open("../images/ctisus/ctisusTiff/adrenal_1-01.tiff"))
 
 # Apply the Gaussian filter
 sigma = 0.5
