@@ -13,7 +13,8 @@ img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 pixels = img.reshape((-1, 3))
 
 # Specify the number of clusters
-k = 5
+# k = 4
+k = 6
 
 # Initialize the k-means algorithm
 kmeans = KMeans(n_clusters=k)
@@ -30,3 +31,4 @@ labels = labels.reshape(img.shape[:2])
 # Visualize the segmented image
 plt.imshow(labels)
 plt.show()
+
