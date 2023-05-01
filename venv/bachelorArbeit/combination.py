@@ -110,61 +110,11 @@
 
 ########## works
 
-# import cv2
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from sklearn.cluster import KMeans
-# from skimage import io, segmentation, color
-# # Load the image
-# img = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
-#
-# # Convert the image to grayscale
-# gray = color.rgb2gray(img)
-#
-# # Reshape the grayscale image to a 1D array of pixels
-# pixels = gray.reshape((-1, 1))
-#
-# # Specify the number of clusters
-# k = 5
-#
-# # Initialize the k-means algorithm
-# kmeans = KMeans(n_clusters=k)
-#
-# # Fit the algorithm to the pixel data
-# kmeans.fit(pixels)
-#
-# # Get the labels for each pixel
-# labels = kmeans.labels_
-#
-# # Reshape the labels to the original image shape
-# labels = labels.reshape(gray.shape)
-#
-# # Define the seed point for region growing
-# seed_point = (200, 250)
-#
-# # Define the tolerance for region growing
-# tolerance = 0.1
-#
-# # Segment the image using region growing
-# segment = segmentation.flood(labels, seed_point, tolerance=tolerance)
-#
-# # Visualize the segmentation
-# out = color.label2rgb(segment, img, kind='avg')
-#
-# # Display the result
-# io.imshow(out)
-# io.show()
-
-#######################################33
-
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from skimage import io, segmentation, color
-from skimage.segmentation import flood_fill
-
 # Load the image
 img = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
 
@@ -175,7 +125,6 @@ gray = color.rgb2gray(img)
 pixels = gray.reshape((-1, 1))
 
 # Specify the number of clusters
-# k = 6
 k = 5
 
 # Initialize the k-means algorithm
@@ -190,27 +139,20 @@ labels = kmeans.labels_
 # Reshape the labels to the original image shape
 labels = labels.reshape(gray.shape)
 
+# Define the seed point for region growing
+seed_point = (200, 250)
 
-# Display the image
-fig, ax = plt.subplots()
-ax.imshow(labels, cmap=plt.cm.gray)
+# Define the tolerance for region growing
+tolerance = 0.1
 
+# Segment the image using region growing
+segment = segmentation.flood(labels, seed_point, tolerance=tolerance)
 
-# Define an event handler function for mouse clicks
-def onclick(event):
-    # Get the x and y coordinates of the mouse click
-    x = int(event.xdata)
-    y = int(event.ydata)
+# Visualize the segmentation
+out = color.label2rgb(segment, img, kind='avg')
 
-    # Use the flood_fill function to segment the image
-    segmented_image = flood_fill(labels, (x, y), new_value=255, tolerance=1)
+# Display the result
+io.imshow(out)
+io.show()
 
-    # Display the segmented image
-    ax.imshow(color.label2rgb(segmented_image, image=labels), cmap=plt.cm.gray)
-    plt.draw()
-
-# Connect the event handler function to the mouse click event
-cid = fig.canvas.mpl_connect('button_press_event', onclick)
-
-plt.show()
-
+#######################################33
