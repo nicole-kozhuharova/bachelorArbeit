@@ -73,7 +73,7 @@ def on_mouse(event, x, y, flags, params):
         clicks.append((y,x))
 
 clicks = []
-image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp', 0)
+image = cv2.imread('../images/ctisus/ctisusBmp/adrenal_1-01.bmp', 0)
 ret, img = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
 cv2.namedWindow('Input')
 cv2.setMouseCallback('Input', on_mouse, 0, )
