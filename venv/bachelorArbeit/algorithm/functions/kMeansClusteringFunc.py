@@ -31,17 +31,3 @@ def kMeans_segment_image(image, num_clusters):
 
     # Return the segments
     return segments
-
-# Example usage
-# image_path = '../../images/ctisus/ctisusBmp/adrenal_1-01.bmp'
-# # Load the image and convert it to grayscale
-# image = cv2.imread(image_path)
-# segments = kMeans_segment_image(image, 7)
-#
-# # Display the results
-# original_image = cv2.imread(image_path)
-# cv2.imshow('Original Image', original_image)
-# for i, segment in enumerate(segments):
-#     cv2.imshow(f'Segment {i}', segment)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
