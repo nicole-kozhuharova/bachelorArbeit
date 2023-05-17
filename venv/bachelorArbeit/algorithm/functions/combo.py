@@ -7,6 +7,7 @@ from PIL import Image, ImageOps, ImageTk, ImageFilter
 from medianFilterFunc import apply_median_filter, apply_sharpen_filter
 from kMeansClusteringFunc import kMeans_segment_image
 from calculatePerimeter import calculate_perimeter
+from calculateArea import calculate_area
 
 # Load the image
 originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
@@ -37,5 +38,9 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 regionOfInterest = './segmentedImages/segment_1.bmp'
+
 perimeter = calculate_perimeter(regionOfInterest)
 print('Perimeter:', perimeter)
+
+area = calculate_area(regionOfInterest)
+print('Area:', area)

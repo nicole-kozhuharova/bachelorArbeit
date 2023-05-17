@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def calculate_perimeter(segmented_image_path):
+def calculate_area(segmented_image_path):
 
     # Load the segmented image
     segmented_image = cv2.imread(segmented_image_path)
@@ -12,10 +12,10 @@ def calculate_perimeter(segmented_image_path):
     # Find contours in the grayscale image
     contours, _ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Calculate the perimeter of the largest contour
+    # Calculate the area of the largest contour
     if len(contours) > 0:
         contour = max(contours, key=cv2.contourArea)
-        perimeter = cv2.arcLength(contour, True)
-        return perimeter
+        area = cv2.contourArea(contour)
+        return area
     else:
         return 0.0
