@@ -34,6 +34,19 @@ for i, segment in enumerate(segments):
     segment_path = os.path.join(output_dir, segment_filename)
     cv2.imwrite(segment_path, segment)
     cv2.imshow(f'Segment {i}', segment)
+    if i == 1:
+        # Convert the segment to grayscale
+        segment_gray = cv2.cvtColor(segment, cv2.COLOR_BGR2GRAY)
+
+        # Apply thresholding to create a binary image
+        _, binary_segment = cv2.threshold(segment_gray, 1, 255, cv2.THRESH_BINARY)
+
+        # Save the binary segment as an image
+        binary_segment_path = os.path.join(output_dir, 'segment_1_binary.bmp')
+        cv2.imwrite(binary_segment_path, binary_segment)
+        print('Segment 1 saved as binary')
+
+# Wait for key press
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 

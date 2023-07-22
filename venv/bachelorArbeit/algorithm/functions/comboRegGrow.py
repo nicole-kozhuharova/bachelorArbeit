@@ -28,12 +28,14 @@ segment = perform_region_growing(grayImage)
 # Directory to save the segmented image
 cv2.imwrite('./segmentedImages/regGrowingSegment.bmp', segment)
 cv2.imshow('Region Growing Segment', segment)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
 # Display the results
 cv2.imshow('Original Image', originalImage)
 cv2.imshow('Filtered Image', sharpenFilteredImageArr)
+
+# Wait for key press
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 regionOfInterest = './segmentedImages/regGrowingSegment.bmp'
 perimeter = calculate_perimeter(regionOfInterest)

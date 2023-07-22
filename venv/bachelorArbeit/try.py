@@ -406,128 +406,490 @@
 # plt.show()
 
 
+# import cv2
+# import numpy as np
+#
+# def get8n(x, y, shape):
+#     out = []
+#     maxx = shape[1]-1
+#     maxy = shape[0]-1
+#
+#     #top left
+#     outx = min(max(x-1,0),maxx)
+#     outy = min(max(y-1,0),maxy)
+#     out.append((outx,outy))
+#
+#     #top center
+#     outx = x
+#     outy = min(max(y-1,0),maxy)
+#     out.append((outx,outy))
+#
+#     #top right
+#     outx = min(max(x+1,0),maxx)
+#     outy = min(max(y-1,0),maxy)
+#     out.append((outx,outy))
+#
+#     #left
+#     outx = min(max(x-1,0),maxx)
+#     outy = y
+#     out.append((outx,outy))
+#
+#     #right
+#     outx = min(max(x+1,0),maxx)
+#     outy = y
+#     out.append((outx,outy))
+#
+#     #bottom left
+#     outx = min(max(x-1,0),maxx)
+#     outy = min(max(y+1,0),maxy)
+#     out.append((outx,outy))
+#
+#     #bottom center
+#     outx = x
+#     outy = min(max(y+1,0),maxy)
+#     out.append((outx,outy))
+#
+#     #bottom right
+#     outx = min(max(x+1,0),maxx)
+#     outy = min(max(y+1,0),maxy)
+#     out.append((outx,outy))
+#
+#     return out
+#
+# def region_growing(img, seed):
+#     list = []
+#     outimg = np.zeros_like(img)
+#     list.append((seed[0], seed[1]))
+#     processed = []
+#     while(len(list) > 0):
+#         pix = list[0]
+#         outimg[pix[0], pix[1]] = 255
+#         for coord in get8n(pix[0], pix[1], img.shape):
+#             if img[coord[0], coord[1]] != 0:
+#                 outimg[coord[0], coord[1]] = 255
+#                 if not coord in processed:
+#                     list.append(coord)
+#                 processed.append(coord)
+#         list.pop(0)
+#         cv2.imshow("progress",outimg)
+#         cv2.waitKey(1)
+#     return outimg
+#
+# def on_mouse(event, x, y, flags, params):
+#     if event == cv2.EVENT_LBUTTONDOWN:
+#         print ('Seed: ' + str(x) + ', ' + str(y), img[y,x])
+#         clicks.append((y,x))
+#
+# clicks = []
+# image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp', 0)
+# ret, img = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
+# cv2.namedWindow('Input')
+# cv2.setMouseCallback('Input', on_mouse, 0, )
+# cv2.imshow('Input', image)
+# cv2.waitKey()
+# seed = clicks[-1]
+# out = region_growing(img, seed)
+# cv2.imshow('Region Growing', out)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+#
+# # source: https://github.com/zjgirl/RegionGrowing-1/blob/master/RegionGrowing.py
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+
+# import cv2
+# import numpy as np
+#
+# # Step 3: Read the Image
+# image = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp", 0)  # Read as grayscale
+#
+# # Step 5: Initialize the Active Contour Parameters
+# alpha = 0.1
+# beta = 0.3
+# gamma = 0.01
+# iterations = 500
+#
+# # Step 6: Perform Active Contour Segmentation
+# snake = cv2.segmentation.active_contour(image, init_contour_points, alpha, beta, gamma, iterations)
+#
+# # Step 7: Visualize the Segmented Tumor
+# segmented_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)  # Convert to color image
+# cv2.polylines(segmented_image, np.int32([snake]), isClosed=True, color=(0, 255, 0), thickness=2)
+# cv2.imshow("Segmented Tumor", segmented_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+# import cv2
+# import numpy as np
+#
+# # Step 3: Read the Image
+# image = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+#
+# # Step 4: Preprocess the Image (if needed)
+#
+# # Step 5: Initialize the GrabCut Parameters
+# rect = (x, y, w, h)  # Rectangular region around the tumor (x, y, width, height)
+# mask = np.zeros(image.shape[:2], np.uint8)
+# bgd_model = np.zeros((1, 65), np.float64)
+# fgd_model = np.zeros((1, 65), np.float64)
+# iterations = 5  # Number of iterations for GrabCut
+#
+# # Step 6: Perform GrabCut Segmentation
+# cv2.grabCut(image, mask, rect, bgd_model, fgd_model, iterations, cv2.GC_INIT_WITH_RECT)
+#
+# # Step 7: Generate the Mask
+# mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+#
+# # Step 8: Apply the Mask to the Image
+# segmented_image = image * mask[:, :, np.newaxis]
+#
+# # Step 9: Visualize the Segmented Tumor
+# cv2.imshow("Segmented Tumor", segmented_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+# import cv2
+# import numpy as np
+#
+# # Global variables
+# drawing = False
+# ix, iy = -1, -1
+# rect = (0, 0, 0, 0)
+#
+# # Mouse callback function
+# def draw_rectangle(event, x, y, flags, param):
+#     global ix, iy, drawing, rect
+#
+#     if event == cv2.EVENT_LBUTTONDOWN:
+#         drawing = True
+#         ix, iy = x, y
+#
+#     elif event == cv2.EVENT_LBUTTONUP:
+#         drawing = False
+#         cv2.rectangle(image, (ix, iy), (x, y), (0, 255, 0), 2)
+#         rect = (min(ix, x), min(iy, y), abs(ix - x), abs(iy - y))
+#
+# # Step 1: Read the Image
+# image = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+#
+# # Step 2: Create a window and set the mouse callback
+# cv2.namedWindow("Image")
+# cv2.setMouseCallback("Image", draw_rectangle)
+#
+# while True:
+#     cv2.imshow("Image", image)
+#     key = cv2.waitKey(1) & 0xFF
+#
+#     if key == ord('r'):  # Press 'r' to reset the drawn rectangle
+#         image = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+#
+#     elif key == ord('s'):  # Press 's' to proceed with segmentation
+#         if rect[2] > 0 and rect[3] > 0:
+#             # Step 3: Preprocess the Image (if needed)
+#
+#             # Step 4: Initialize the GrabCut Parameters
+#             mask = np.zeros(image.shape[:2], np.uint8)
+#             bgd_model = np.zeros((1, 65), np.float64)
+#             fgd_model = np.zeros((1, 65), np.float64)
+#             iterations = 5  # Number of iterations for GrabCut
+#
+#             # Step 5: Perform GrabCut Segmentation
+#             cv2.grabCut(image, mask, rect, bgd_model, fgd_model, iterations, cv2.GC_INIT_WITH_RECT)
+#
+#             # Step 6: Generate the Mask
+#             mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+#
+#             # Step 7: Apply the Mask to the Image
+#             segmented_image = image * mask[:, :, np.newaxis]
+#
+#             # Step 8: Visualize the Segmented Tumor
+#             cv2.imshow("Segmented Tumor", segmented_image)
+#             cv2.waitKey(0)
+#             break
+#
+#     elif key == 27:  # Press 'Esc' to exit
+#         break
+#
+# cv2.destroyAllWindows()
+
+
+
+
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from skimage.color import rgb2gray
+# from skimage import data
+# from skimage.filters import gaussian
+# from skimage.segmentation import active_contour
+#
+# img = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# img = rgb2gray(img)
+#
+# s = np.linspace(0, 2*np.pi, 200)
+# r = 250 + 100*np.sin(s)
+# c = 220 + 100*np.cos(s)
+# init = np.array([r, c]).T
+#
+# snake = active_contour(gaussian(img, 3, preserve_range=False),
+#                        init, alpha=0.015, beta=10, gamma=0.001, max_num_iter=500)
+#
+# fig, ax = plt.subplots(figsize=(7, 7))
+# ax.imshow(img, cmap=plt.cm.gray)
+# ax.plot(init[:, 1], init[:, 0], '--r', lw=3)
+# ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
+# ax.set_xticks([]), ax.set_yticks([])
+# ax.axis([0, img.shape[1], img.shape[0], 0])
+#
+# plt.show()
+
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from skimage.color import rgb2gray
+# from skimage.filters import gaussian
+# from skimage.segmentation import active_contour
+#
+# # Step 1: Read the image and convert to grayscale
+# img = cv2.imread("./images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# img = rgb2gray(img)
+#
+# # Step 2: Initialize the contour points
+# s = np.linspace(0, 2*np.pi, 200)
+# r = 250 + 100*np.sin(s)
+# c = 220 + 100*np.cos(s)
+# init = np.array([r, c]).T
+#
+# # Step 3: Perform active contour segmentation
+# snake = active_contour(gaussian(img, 3, preserve_range=False),
+#                        init, alpha=0.015, beta=10, gamma=0.001,
+#                        max_num_iter=500)  # Increase the number of iterations
+#
+# # Step 4: Create binary image from segmented region
+# binary_img = np.zeros_like(img)
+# snake_int = np.round(snake).astype(int)
+# binary_img[snake_int[:, 0], snake_int[:, 1]] = 1
+#
+# # Step 5: Visualize the binary image
+# fig, ax = plt.subplots(figsize=(7, 7))
+# ax.imshow(binary_img, cmap='binary')
+# ax.set_xticks([]), ax.set_yticks([])
+#
+# plt.show()
+
+
+
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
+#
+# def split_merge_segmentation(image, min_region_size, similarity_threshold, max_iterations):
+#     # Step 1: Convert image to grayscale
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#
+#     # Step 2: Split the image into initial regions
+#     regions = [[(0, 0, gray.shape[1], gray.shape[0])]]  # Start with a single region covering the entire image
+#
+#     # Step 3: Merge similar adjacent regions
+#     iteration = 0
+#     while len(regions) > 0 and iteration < max_iterations:
+#         current_region = regions.pop(0)
+#         if len(current_region) == 1:
+#             x, y, w, h = current_region[0]
+#             region_gray = gray[y:y + h, x:x + w]
+#
+#             # Calculate the variance of the region
+#             variance = np.var(region_gray)
+#
+#             # Check if the variance is below the threshold and region size is above the minimum
+#             if variance < similarity_threshold and w * h > min_region_size:
+#                 # Split the region into four smaller regions
+#                 new_regions = [
+#                     [(x, y, w // 2, h // 2)],  # Top-left
+#                     [(x + w // 2, y, w // 2, h // 2)],  # Top-right
+#                     [(x, y + h // 2, w // 2, h // 2)],  # Bottom-left
+#                     [(x + w // 2, y + h // 2, w // 2, h // 2)]  # Bottom-right
+#                 ]
+#                 regions.extend(new_regions)
+#             else:
+#                 # Region is homogeneous or too small, keep it as is
+#                 regions.append(current_region)
+#         else:
+#             # Region has already been split, keep it as is
+#             regions.append(current_region)
+#
+#         iteration += 1
+#
+#     # Step 4: Create a mask of the segmented tumor
+#     mask = np.zeros(gray.shape, dtype=np.uint8)
+#     for region in regions:
+#         for rect in region:
+#             x, y, w, h = rect
+#             mask[y:y + h, x:x + w] = 255
+#
+#     return mask
+#
+#
+# # Load the image
+# image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+#
+# # Parameters for segmentation
+# min_region_size = 100  # Minimum region size to split
+# similarity_threshold = 500  # Threshold for region similarity (variance)
+# max_iterations = 100  # Maximum number of iterations
+#
+# # Perform split and merge segmentation
+# segmented_mask = split_merge_segmentation(image, min_region_size, similarity_threshold, max_iterations)
+#
+# # Display the original image and segmented tumor mask
+# fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+# ax1.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+# ax1.set_title('Original Image')
+# ax1.axis('off')
+# ax2.imshow(segmented_mask, cmap='gray')
+# ax2.set_title('Segmented Tumor Mask')
+# ax2.axis('off')
+# plt.show()
+
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
+#
+# def split_merge_segmentation(image, min_region_size, similarity_threshold):
+#     # Step 1: Convert image to grayscale
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#
+#     # Step 2: Split the image into initial regions
+#     regions = [[(0, 0, gray.shape[1], gray.shape[0])]]  # Start with a single region covering the entire image
+#
+#     # Step 3: Merge similar adjacent regions
+#     while len(regions) > 0:
+#         current_region = regions.pop(0)
+#         if len(current_region) == 1:
+#             x, y, w, h = current_region[0]
+#             region_gray = gray[y:y + h, x:x + w]
+#
+#             # Calculate the variance of the region
+#             variance = np.var(region_gray)
+#
+#             # Check if the variance is below the threshold and region size is above the minimum
+#             if variance < similarity_threshold and w * h > min_region_size:
+#                 # Split the region into four smaller regions
+#                 new_regions = [
+#                     [(x, y, w // 2, h // 2)],  # Top-left
+#                     [(x + w // 2, y, w // 2, h // 2)],  # Top-right
+#                     [(x, y + h // 2, w // 2, h // 2)],  # Bottom-left
+#                     [(x + w // 2, y + h // 2, w // 2, h // 2)]  # Bottom-right
+#                 ]
+#                 regions.extend(new_regions)
+#             else:
+#                 # Region is homogeneous or too small, keep it as is
+#                 regions.append(current_region)
+#         else:
+#             # Region has already been split, keep it as is
+#             regions.append(current_region)
+#
+#     # Step 4: Create a mask of the segmented tumor
+#     mask = np.zeros(gray.shape, dtype=np.uint8)
+#     for region in regions:
+#         for rect in region:
+#             x, y, w, h = rect
+#             mask[y:y + h, x:x + w] = 255
+#
+#     return mask
+#
+#
+# # Load the image
+# image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+#
+# # Parameters for segmentation
+# min_region_size = 100  # Minimum region size to split
+# similarity_threshold = 500  # Threshold for region similarity (variance)
+#
+# # Perform split and merge segmentation
+# segmented_mask = split_merge_segmentation(image, min_region_size, similarity_threshold)
+#
+# # Display the original image and segmented tumor mask
+# fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+# ax1.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+# ax1.set_title('Original Image')
+# ax1.axis('off')
+# ax2.imshow(segmented_mask, cmap='gray')
+# ax2.set_title('Segmented Tumor Mask')
+# ax2.axis('off')
+# plt.show()
+
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
-def get8n(x, y, shape):
-    out = []
-    maxx = shape[1]-1
-    maxy = shape[0]-1
+def grabcut_segmentation(image):
+    # Create a mask initialized with zeros
+    mask = np.zeros(image.shape[:2], np.uint8)
 
-    #top left
-    outx = min(max(x-1,0),maxx)
-    outy = min(max(y-1,0),maxy)
-    out.append((outx,outy))
+    # Create temporary arrays for foreground and background models
+    bgd_model = np.zeros((1, 65), np.float64)
+    fgd_model = np.zeros((1, 65), np.float64)
 
-    #top center
-    outx = x
-    outy = min(max(y-1,0),maxy)
-    out.append((outx,outy))
+    # Define the rectangular region of interest (ROI) enclosing the tumor
+    # Adjust the values according to your specific image and tumor location
+    x = 180
+    y = 220
+    width = 100
+    height = 90
+    rect = (x, y, width, height)
 
-    #top right
-    outx = min(max(x+1,0),maxx)
-    outy = min(max(y-1,0),maxy)
-    out.append((outx,outy))
+    # Apply GrabCut algorithm to segment the tumor
+    cv2.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
 
-    #left
-    outx = min(max(x-1,0),maxx)
-    outy = y
-    out.append((outx,outy))
+    # Create a mask with the probable foreground (GC_PR_FGD or GC_FGD) and definite foreground (GC_FGD) labels
+    mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
 
-    #right
-    outx = min(max(x+1,0),maxx)
-    outy = y
-    out.append((outx,outy))
+    # Apply the mask to the original image
+    segmented_image = image * mask2[:, :, np.newaxis]
 
-    #bottom left
-    outx = min(max(x-1,0),maxx)
-    outy = min(max(y+1,0),maxy)
-    out.append((outx,outy))
+    return segmented_image
 
-    #bottom center
-    outx = x
-    outy = min(max(y+1,0),maxy)
-    out.append((outx,outy))
+# Load the image
+image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
 
-    #bottom right
-    outx = min(max(x+1,0),maxx)
-    outy = min(max(y+1,0),maxy)
-    out.append((outx,outy))
+# Perform GrabCut segmentation
+segmented_image = grabcut_segmentation(image)
 
-    return out
-
-def region_growing(img, seed):
-    list = []
-    outimg = np.zeros_like(img)
-    list.append((seed[0], seed[1]))
-    processed = []
-    while(len(list) > 0):
-        pix = list[0]
-        outimg[pix[0], pix[1]] = 255
-        for coord in get8n(pix[0], pix[1], img.shape):
-            if img[coord[0], coord[1]] != 0:
-                outimg[coord[0], coord[1]] = 255
-                if not coord in processed:
-                    list.append(coord)
-                processed.append(coord)
-        list.pop(0)
-        cv2.imshow("progress",outimg)
-        cv2.waitKey(1)
-    return outimg
-
-def on_mouse(event, x, y, flags, params):
-    if event == cv2.EVENT_LBUTTONDOWN:
-        print ('Seed: ' + str(x) + ', ' + str(y), img[y,x])
-        clicks.append((y,x))
-
-clicks = []
-image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp', 0)
-ret, img = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)
-cv2.namedWindow('Input')
-cv2.setMouseCallback('Input', on_mouse, 0, )
-cv2.imshow('Input', image)
-cv2.waitKey()
-seed = clicks[-1]
-out = region_growing(img, seed)
-cv2.imshow('Region Growing', out)
-cv2.waitKey()
-cv2.destroyAllWindows()
-
-# source: https://github.com/zjgirl/RegionGrowing-1/blob/master/RegionGrowing.py
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Display the original image and segmented tumor
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+ax1.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+ax1.set_title('Original Image')
+ax1.axis('off')
+ax2.imshow(cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB))
+ax2.set_title('Segmented Tumor')
+ax2.axis('off')
+plt.show()
 
 
 

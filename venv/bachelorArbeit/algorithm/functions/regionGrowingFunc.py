@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-
+#This function get8n(x, y, shape) returns a list of 8 neighboring pixels of a given pixel (x, y) within the bounds of the image with the specified shape. It handles the boundary cases to ensure that the neighboring pixels are within the image dimensions.
 def get8n(x, y, shape):
     out = []
     maxx = shape[1] - 1
@@ -49,7 +49,13 @@ def get8n(x, y, shape):
 
     return out
 
-
+# This function region_growing(img, seed) implements the region growing algorithm. It takes an input image img and a seed pixel (seed[0], seed[1]) as parameters. The algorithm starts with an empty list list and initializes an output image outimg with the same shape as the input image. The seed pixel is added to the list, and a processed list is created to keep track of visited pixels.
+#
+# The while loop continues until the list is empty. Within the loop, the first pixel in the list is selected (pix = list[0]) and set to 255 (white) in the output image. The neighboring pixels of pix are obtained using the get8n() function, and if a neighboring pixel's value in the input image is non-zero, it is also set to 255 in the output image. The neighboring pixel is then checked if it has already been processed or not. If not, it is appended to the list and marked as processed.
+#
+# The first pixel in the list is removed (list.pop(0)), and the current progress of the region growing is displayed using cv2.imshow() and cv2.waitKey() functions.
+#
+# The function returns the resulting output image outimg.
 def region_growing(img, seed):
     list = []
     outimg = np.zeros_like(img)
@@ -94,5 +100,4 @@ def perform_region_growing(image):
 
     return out
 
-# Usage example
-# perform_region_growing('../images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+# source: https://github.com/zjgirl/RegionGrowing-1/blob/master/RegionGrowing.py
