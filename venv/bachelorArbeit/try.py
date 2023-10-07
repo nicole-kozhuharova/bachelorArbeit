@@ -848,50 +848,376 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-def grabcut_segmentation(image):
-    # Create a mask initialized with zeros
-    mask = np.zeros(image.shape[:2], np.uint8)
-
-    # Create temporary arrays for foreground and background models
-    bgd_model = np.zeros((1, 65), np.float64)
-    fgd_model = np.zeros((1, 65), np.float64)
-
-    # Define the rectangular region of interest (ROI) enclosing the tumor
-    # Adjust the values according to your specific image and tumor location
-    x = 180
-    y = 220
-    width = 100
-    height = 90
-    rect = (x, y, width, height)
-
-    # Apply GrabCut algorithm to segment the tumor
-    cv2.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
-
-    # Create a mask with the probable foreground (GC_PR_FGD or GC_FGD) and definite foreground (GC_FGD) labels
-    mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
-
-    # Apply the mask to the original image
-    segmented_image = image * mask2[:, :, np.newaxis]
-
-    return segmented_image
-
-# Load the image
-image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
-
-# Perform GrabCut segmentation
-segmented_image = grabcut_segmentation(image)
-
-# Display the original image and segmented tumor
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-ax1.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-ax1.set_title('Original Image')
-ax1.axis('off')
-ax2.imshow(cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB))
-ax2.set_title('Segmented Tumor')
-ax2.axis('off')
-plt.show()
-
-
+# def grabcut_segmentation(image):
+#     # Create a mask initialized with zeros
+#     mask = np.zeros(image.shape[:2], np.uint8)
+#
+#     # Create temporary arrays for foreground and background models
+#     bgd_model = np.zeros((1, 65), np.float64)
+#     fgd_model = np.zeros((1, 65), np.float64)
+#
+#     # Define the rectangular region of interest (ROI) enclosing the tumor
+#     # Adjust the values according to your specific image and tumor location
+#     x = 180
+#     y = 220
+#     width = 100
+#     height = 90
+#     rect = (x, y, width, height)
+#
+#     # Apply GrabCut algorithm to segment the tumor
+#     cv2.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
+#
+#     # Create a mask with the probable foreground (GC_PR_FGD or GC_FGD) and definite foreground (GC_FGD) labels
+#     mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+#
+#     # Apply the mask to the original image
+#     segmented_image = image * mask2[:, :, np.newaxis]
+#
+#     return segmented_image
+#
+# # Load the image
+# image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+#
+# # Perform GrabCut segmentation
+# segmented_image = grabcut_segmentation(image)
+#
+# # Display the original image and segmented tumor
+# fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+# ax1.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+# ax1.set_title('Original Image')
+# ax1.axis('off')
+# ax2.imshow(cv2.cvtColor(segmented_image, cv2.COLOR_BGR2RGB))
+# ax2.set_title('Segmented Tumor')
+# ax2.axis('off')
+# plt.show()
 
 
+
+
+# import cv2
+# import numpy as np
+#
+# def split_and_merge(image_path, val, s):
+#     global v
+#     v = val
+#     I = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+#
+#     # Perform split and merge segmentation
+#     M = split_merge(I)
+#
+#     # Save the segmented image if needed
+#     if s != 0:
+#         path, ext = image_path.rsplit('.', 1)
+#         if v == 5:
+#             new_image_path = f"{path}_SMcontur_moreGray.{ext}"
+#         else:
+#             new_image_path = f"{path}_SMcontur_betterContrast.{ext}"
+#         cv2.imwrite(new_image_path, M)
+#
+#     return M
+#
+#
+# def split_merge(I):
+#     mindim = 2
+#
+#     def predicate(region):
+#         sd = np.std(region)
+#         mean = np.mean(region)
+#         return (sd > v) and (0 < mean < 255)
+#
+#     def split(B, mindim, fun):
+#         K = B.shape[0]
+#         split_flag = False  # Initialize the split_flag to False
+#         for Im in range(K):
+#             quadregion = B[Im]
+#             if quadregion.shape[0] <= mindim:
+#                 continue  # The block shouldn't be split
+#             flag1 = fun(quadregion)
+#             if flag1:
+#                 split_flag = True  # The block should be split if any subregion satisfies the condition
+#                 break
+#         return split_flag
+#
+#     def merge(I, S, Bmax, fun):
+#         M = np.zeros_like(I)
+#         marker = np.zeros_like(I)
+#
+#         for k in range(1, Bmax + 1):
+#             vals, r, c = get_node(I, S, k)
+#             if len(vals) > 0:
+#                 for i in range(len(r)):
+#                     xlow, ylow = r[i], c[i]
+#                     xhigh, yhigh = xlow + k - 1, ylow + k - 1
+#                     region = I[xlow:xhigh + 1, ylow:yhigh + 1]
+#                     flag = fun(region)
+#                     if flag:
+#                         M[xlow:xhigh + 1, ylow:yhigh + 1] = 1
+#                         marker[xlow, ylow] = 1
+#
+#         # Connect and label regions with bwlabel
+#         cc = cv2.connectedComponentsWithStats(np.uint8(marker), connectivity=8)
+#         labeled = cc[1]
+#         M = labeled[0:I.shape[0], 0:I.shape[1]]
+#
+#         # Fill holes in the image
+#         BWdfill = cv2.fillHoles(np.uint8(M))
+#
+#         return BWdfill
+#
+#     def get_node(I, S, k):
+#         mask = np.zeros_like(S, dtype=np.uint8)
+#         mask[S == k] = 255
+#         mask = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+#         if len(mask) > 0:
+#             x, y, w, h = cv2.boundingRect(max(mask, key=cv2.contourArea))
+#             vals = I[y:y+h, x:x+w]
+#             r, c = np.where(S[y:y+h, x:x+w] == k)
+#             return vals, r + y, c + x
+#         else:
+#             return [], [], []
+#
+#     # Pad subimage with zeros to the nearest square size
+#     p = 2**int(np.ceil(np.log2(max(I.shape))))
+#     I = cv2.copyMakeBorder(I, 0, p - I.shape[0], 0, p - I.shape[1], cv2.BORDER_CONSTANT, value=0)
+#
+#     # Splitting
+#     S = np.zeros_like(I, dtype=int)
+#     quadtree_split(I, S, mindim, split, predicate)
+#
+#     # Merging
+#     Bmax = S.max()
+#     BWdfill = merge(I, S, Bmax, predicate)
+#
+#     return BWdfill
+#
+# def quadtree_split(I, S, mindim, split_func, predicate_func):
+#     m, n = I.shape
+#     quadsize = max(m, n)
+#
+#     if quadsize <= mindim:
+#         return
+#
+#     t1 = I[0:m // 2, 0:n // 2]
+#     t2 = I[0:m // 2, n // 2:n]
+#     t3 = I[m // 2:m, 0:n // 2]
+#     t4 = I[m // 2:m, n // 2:n]
+#
+#     if split_func(t1, mindim, predicate_func):
+#         S[0:m // 2, 0:n // 2] = S.max() + 1
+#         quadtree_split(t1, S[0:m // 2, 0:n // 2], mindim, split_func, predicate_func)
+#
+#     if split_func(t2, mindim, predicate_func):
+#         S[0:m // 2, n // 2:n] = S.max() + 1
+#         quadtree_split(t2, S[0:m // 2, n // 2:n], mindim, split_func, predicate_func)
+#
+#     if split_func(t3, mindim, predicate_func):
+#         S[m // 2:m, 0:n // 2] = S.max() + 1
+#         quadtree_split(t3, S[m // 2:m, 0:n // 2], mindim, split_func, predicate_func)
+#
+#     if split_func(t4, mindim, predicate_func):
+#         S[m // 2:m, n // 2:n] = S.max() + 1
+#         quadtree_split(t4, S[m // 2:m, n // 2:n], mindim, split_func, predicate_func)
+#
+#
+#
+# # Example usage:
+# val = 20  # Choose a value for the segmentation
+# s = 1  # Set to 1 to save the segmented image, or 0 otherwise
+# image_path = './images/ctisus/ctisusBmp/adrenal_1-01.bmp'
+# segmented_image = split_and_merge(image_path, val, s)
+
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
+# selected_roi = None
+#
+#
+# def on_mouse_click(event, x, y, flags, param):
+#     global selected_roi
+#     if event == cv2.EVENT_LBUTTONDOWN:
+#         selected_roi = (x, y)
+#
+#
+# def split_and_merge(image, threshold):
+#     h, w = image.shape[:2]
+#
+#     # Step 1: Split the image into four quadrants
+#     if h > 1 and w > 1:
+#         mid_h, mid_w = h // 2, w // 2
+#         quadrants = [
+#             image[:mid_h, :mid_w],  # Top-left
+#             image[:mid_h, mid_w:],  # Top-right
+#             image[mid_h:, :mid_w],  # Bottom-left
+#             image[mid_h:, mid_w:],  # Bottom-right
+#         ]
+#
+#         # Step 2: Check the variance of each quadrant
+#         # If the variance is below the threshold, merge the quadrant
+#         for quadrant in quadrants:
+#             if np.var(quadrant) < threshold:
+#                 avg_color = np.mean(quadrant)
+#                 quadrant[:, :] = avg_color
+#
+#         # Step 3: Recursively apply the algorithm to the split quadrants
+#         for quadrant in quadrants:
+#             split_and_merge(quadrant, threshold)
+#
+#     return image
+#
+#
+# def main():
+#     input_image_path = './images/ctisus/ctisusBmp/adrenal_1-01.bmp'
+#     threshold = 1000  # Adjust this threshold according to your preference
+#
+#     # Read the input image
+#     image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
+#
+#     # Display the image and allow the user to select a region of interest (ROI)
+#     cv2.imshow("Select ROI", image)
+#     cv2.setMouseCallback("Select ROI", on_mouse_click)
+#     cv2.waitKey(0)
+#     cv2.destroyAllWindows()
+#
+#     if selected_roi is None:
+#         print("No ROI selected.")
+#         return
+#
+#     x, y = selected_roi
+#     roi_width = 1000  # Adjust the width of the ROI based on your preference
+#     roi_height = 1000  # Adjust the height of the ROI based on your preference
+#
+#     # Crop the selected ROI from the image
+#     roi = image[y:y + roi_height, x:x + roi_width]
+#
+#     # Perform split-and-merge segmentation on the ROI
+#     segmented_roi = split_and_merge(roi, threshold)
+#
+#     # Display the original ROI and segmented ROI
+#     plt.figure(figsize=(10, 5))
+#     plt.subplot(1, 2, 1)
+#     plt.title('Original ROI')
+#     plt.imshow(roi, cmap='gray')
+#
+#     plt.subplot(1, 2, 2)
+#     plt.title('Segmented ROI')
+#     plt.imshow(segmented_roi, cmap='gray')
+#
+#     plt.show()
+#
+#
+# main()
+
+
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+from skimage.measure import label
+
+
+def split_and_merge(f, mindim, fun):
+    # Pad image with zeros to guarantee that function qtdecomp will
+    # split regions down to size 1-by-1.
+    Q = 2 ** int(np.ceil(np.log2(max(f.shape))))
+    f = np.pad(f, ((0, Q - f.shape[0]), (0, Q - f.shape[1])), mode='constant')
+
+    # Perform splitting first.
+    S = qtdecomp(f, mindim, fun)
+
+    # Now merge by looking at each quadregion and setting all its
+    # elements to 1 if the block satisfies the predicate.
+
+    # Get the size of the largest block. Use full because S is sparse.
+    Lmax = int(np.max(S))
+    # Set the output image initially to all zeros. The MARKER array is
+    # used later to establish connectivity.
+    g = np.zeros_like(f)
+    MARKER = np.zeros_like(f, dtype=bool)
+
+    # Begin the merging stage.
+    for K in range(1, Lmax + 1):
+        vals, r, c = qtgetblk(f, S, K)
+        if len(vals) > 0:
+            # Check the predicate for each of the regions
+            # of size K-by-K with coordinates given by vectors
+            # r and c.
+            for I in range(len(r)):
+                xlow, ylow = r[I], c[I]
+                xhigh, yhigh = xlow + K - 1, ylow + K - 1
+                region = f[xlow:xhigh + 1, ylow:yhigh + 1]
+                flag = fun(region)
+                if flag:
+                    g[xlow:xhigh + 1, ylow:yhigh + 1] = 1
+                    MARKER[xlow, ylow] = 1
+
+    # Finally, obtain each connected region and label it with a
+    # different integer value using function label.
+    g = label(MARKER & g)
+
+    # Crop and exit
+    g = g[:f.shape[0], :f.shape[1]]
+
+    return g
+
+
+def qtdecomp(f, mindim, fun):
+    H, W = f.shape
+    full_size = 2 ** int(np.ceil(np.log2(max(H, W))))
+    padded_f = np.pad(f, ((0, full_size - H), (0, full_size - W)), mode='constant')
+
+    S = np.zeros((full_size, full_size), dtype=int)
+    S[:H, :W] = 1
+
+    split_region(S, padded_f, full_size, mindim, fun)
+
+    return S
+
+
+def split_region(S, f, N, mindim, fun):
+    if N <= mindim:
+        return
+
+    for i in range(2):
+        for j in range(2):
+            subregion = f[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2]
+            if (lambda region: np.std(region) > 10 and 0 < np.mean(region) < 125)(subregion):
+                split_region(S, f, N // 2, mindim, fun)
+            else:
+                S[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2] = 0
+
+
+def qtgetblk(f, S, K):
+    rows, cols = np.where(S == K)
+    if len(rows) > 0:
+        xlow, ylow = np.min(rows), np.min(cols)
+        xhigh, yhigh = np.max(rows), np.max(cols)
+        vals = f[xlow:xhigh + 1, ylow:yhigh + 1]
+        return vals, rows, cols
+    else:
+        return [], [], []
+
+
+# Replace this function with your custom predicate function.
+def predicate(region):
+    return (np.std(region) > 10) and (0 < np.mean(region) < 125)
+
+
+def main():
+    input_image_path = './images/ctisus/ctisusBmp/adrenal_1-01.bmp'
+    mindim = 16  # Minimum dimension of quadtree regions (must be a power of 2)
+
+    # Read the input image
+    image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
+
+    # Perform split-and-merge segmentation with the custom predicate function
+    segmented_image = split_and_merge(image, mindim, predicate)
+
+    # Display the segmented image
+    plt.imshow(segmented_image, cmap='jet')
+    plt.axis('off')
+    plt.show()
+
+
+main()
 

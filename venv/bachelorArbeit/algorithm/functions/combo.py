@@ -11,6 +11,7 @@ from calculateArea import calculate_area
 
 # Load the image
 originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-05.bmp")
 
 # Apply the median filter
 medianFilteredImage = apply_median_filter(originalImage, 7)
@@ -21,6 +22,7 @@ sharpenFilteredImageArr = np.array(sharpenFilteredImage)
 
 # Apply k-Means Clustering
 segments = kMeans_segment_image(sharpenFilteredImageArr, 6)
+# segments = kMeans_segment_image(sharpenFilteredImageArr, 5)
 
 # Directory to save the segmented images
 output_dir = './segmentedImages/'
@@ -43,8 +45,8 @@ for i, segment in enumerate(segments):
 
         # Save the binary segment as an image
         binary_segment_path = os.path.join(output_dir, 'segment_1_binary.bmp')
-        cv2.imwrite(binary_segment_path, binary_segment)
-        print('Segment 1 saved as binary')
+        # cv2.imwrite(binary_segment_path, binary_segment)
+        # print('Segment 1 saved as binary')
 
 # Wait for key press
 cv2.waitKey(0)

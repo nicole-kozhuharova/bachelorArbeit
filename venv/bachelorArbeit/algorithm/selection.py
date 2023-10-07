@@ -49,7 +49,7 @@ _, binary_segment = cv2.threshold(grayscale_mask, 1, 255, cv2.THRESH_BINARY)
 
 # Save the binary segment as an image
 # cv2.imwrite('../images/ctisus/ctisusBmp/adrenal_1-01_selected_binary1.bmp', binary_segment)
-cv2.imwrite('../images/ctisus/ctisusBmp/adrenal_1-01_selected_binary2.bmp', binary_segment)
+cv2.imwrite('../images/ctisus/ctisusBmp/adrenal_1-01_selected_binary3.bmp', binary_segment)
 
 print('Segment saved')
 

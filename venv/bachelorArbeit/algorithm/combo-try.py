@@ -245,13 +245,13 @@ alpha = 1.7
 beta = 0
 sharpen_filtered = sharpen_filter(gray_filtered, alpha, beta)
 
-gamma_corrected = exposure.adjust_gamma(sharpen_filtered, gamma=2)
+# gamma_corrected = exposure.adjust_gamma(sharpen_filtered, gamma=2)
 
 # Define the number of clusters
-num_clusters = 7
+num_clusters = 6
 
 # Reshape the image to a 2D array of pixels and convert it to float32 type
-pixel_values = gamma_corrected.reshape((-1, 1)).astype(np.float32)
+pixel_values = sharpen_filtered.reshape((-1, 1)).astype(np.float32)
 
 # Perform k-means clustering
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
@@ -260,7 +260,7 @@ compactness, labels, centers = cv2.kmeans(pixel_values, num_clusters, None, crit
 
 
 # Reshape the labels to the shape of the original image
-segmented = labels.reshape(gamma_corrected.shape)
+segmented = labels.reshape(sharpen_filtered.shape)
 
 # Create masks for each cluster
 masks = []
@@ -279,7 +279,7 @@ for mask in masks:
 # Display the results
 cv2.imshow('Original Image', image)
 cv2.imshow('Sharpen Filtered Image', sharpen_filtered)
-cv2.imshow('Contrast Enhanced Image with Gamma Correction', gamma_corrected)
+cv2.imshow('Contrast Enhanced Image with Gamma Correction', sharpen_filtered)
 
 for i, segment in enumerate(segments):
     cv2.imshow(f'Segment {i}', segment)
