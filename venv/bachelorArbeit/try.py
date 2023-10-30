@@ -1116,108 +1116,176 @@ import matplotlib.pyplot as plt
 from skimage.measure import label
 
 
-def split_and_merge(f, mindim, fun):
-    # Pad image with zeros to guarantee that function qtdecomp will
-    # split regions down to size 1-by-1.
-    Q = 2 ** int(np.ceil(np.log2(max(f.shape))))
-    f = np.pad(f, ((0, Q - f.shape[0]), (0, Q - f.shape[1])), mode='constant')
+# def split_and_merge(f, mindim, fun):
+#     # Pad image with zeros to guarantee that function qtdecomp will
+#     # split regions down to size 1-by-1.
+#     Q = 2 ** int(np.ceil(np.log2(max(f.shape))))
+#     f = np.pad(f, ((0, Q - f.shape[0]), (0, Q - f.shape[1])), mode='constant')
+#
+#     # Perform splitting first.
+#     S = qtdecomp(f, mindim, fun)
+#
+#     # Now merge by looking at each quadregion and setting all its
+#     # elements to 1 if the block satisfies the predicate.
+#
+#     # Get the size of the largest block. Use full because S is sparse.
+#     Lmax = int(np.max(S))
+#     # Set the output image initially to all zeros. The MARKER array is
+#     # used later to establish connectivity.
+#     g = np.zeros_like(f)
+#     MARKER = np.zeros_like(f, dtype=bool)
+#
+#     # Begin the merging stage.
+#     for K in range(1, Lmax + 1):
+#         vals, r, c = qtgetblk(f, S, K)
+#         if len(vals) > 0:
+#             # Check the predicate for each of the regions
+#             # of size K-by-K with coordinates given by vectors
+#             # r and c.
+#             for I in range(len(r)):
+#                 xlow, ylow = r[I], c[I]
+#                 xhigh, yhigh = xlow + K - 1, ylow + K - 1
+#                 region = f[xlow:xhigh + 1, ylow:yhigh + 1]
+#                 flag = fun(region)
+#                 if flag:
+#                     g[xlow:xhigh + 1, ylow:yhigh + 1] = 1
+#                     MARKER[xlow, ylow] = 1
+#
+#     # Finally, obtain each connected region and label it with a
+#     # different integer value using function label.
+#     g = label(MARKER & g)
+#
+#     # Crop and exit
+#     g = g[:f.shape[0], :f.shape[1]]
+#
+#     return g
+#
+#
+# def qtdecomp(f, mindim, fun):
+#     H, W = f.shape
+#     full_size = 2 ** int(np.ceil(np.log2(max(H, W))))
+#     padded_f = np.pad(f, ((0, full_size - H), (0, full_size - W)), mode='constant')
+#
+#     S = np.zeros((full_size, full_size), dtype=int)
+#     S[:H, :W] = 1
+#
+#     split_region(S, padded_f, full_size, mindim, fun)
+#
+#     return S
+#
+#
+# def split_region(S, f, N, mindim, fun):
+#     if N <= mindim:
+#         return
+#
+#     for i in range(2):
+#         for j in range(2):
+#             subregion = f[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2]
+#             if (lambda region: np.std(region) > 10 and 0 < np.mean(region) < 125)(subregion):
+#                 split_region(S, f, N // 2, mindim, fun)
+#             else:
+#                 S[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2] = 0
+#
+#
+# def qtgetblk(f, S, K):
+#     rows, cols = np.where(S == K)
+#     if len(rows) > 0:
+#         xlow, ylow = np.min(rows), np.min(cols)
+#         xhigh, yhigh = np.max(rows), np.max(cols)
+#         vals = f[xlow:xhigh + 1, ylow:yhigh + 1]
+#         return vals, rows, cols
+#     else:
+#         return [], [], []
+#
+#
+# # Replace this function with your custom predicate function.
+# def predicate(region):
+#     return (np.std(region) > 10) and (0 < np.mean(region) < 125)
+#
+#
+# def main():
+#     input_image_path = './images/ctisus/ctisusBmp/adrenal_1-01.bmp'
+#     mindim = 16  # Minimum dimension of quadtree regions (must be a power of 2)
+#
+#     # Read the input image
+#     image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
+#
+#     # Perform split-and-merge segmentation with the custom predicate function
+#     segmented_image = split_and_merge(image, mindim, predicate)
+#
+#     # Display the segmented image
+#     plt.imshow(segmented_image, cmap='jet')
+#     plt.axis('off')
+#     plt.show()
+#
+#
+# main()
 
-    # Perform splitting first.
-    S = qtdecomp(f, mindim, fun)
-
-    # Now merge by looking at each quadregion and setting all its
-    # elements to 1 if the block satisfies the predicate.
-
-    # Get the size of the largest block. Use full because S is sparse.
-    Lmax = int(np.max(S))
-    # Set the output image initially to all zeros. The MARKER array is
-    # used later to establish connectivity.
-    g = np.zeros_like(f)
-    MARKER = np.zeros_like(f, dtype=bool)
-
-    # Begin the merging stage.
-    for K in range(1, Lmax + 1):
-        vals, r, c = qtgetblk(f, S, K)
-        if len(vals) > 0:
-            # Check the predicate for each of the regions
-            # of size K-by-K with coordinates given by vectors
-            # r and c.
-            for I in range(len(r)):
-                xlow, ylow = r[I], c[I]
-                xhigh, yhigh = xlow + K - 1, ylow + K - 1
-                region = f[xlow:xhigh + 1, ylow:yhigh + 1]
-                flag = fun(region)
-                if flag:
-                    g[xlow:xhigh + 1, ylow:yhigh + 1] = 1
-                    MARKER[xlow, ylow] = 1
-
-    # Finally, obtain each connected region and label it with a
-    # different integer value using function label.
-    g = label(MARKER & g)
-
-    # Crop and exit
-    g = g[:f.shape[0], :f.shape[1]]
-
-    return g
 
 
-def qtdecomp(f, mindim, fun):
-    H, W = f.shape
-    full_size = 2 ** int(np.ceil(np.log2(max(H, W))))
-    padded_f = np.pad(f, ((0, full_size - H), (0, full_size - W)), mode='constant')
-
-    S = np.zeros((full_size, full_size), dtype=int)
-    S[:H, :W] = 1
-
-    split_region(S, padded_f, full_size, mindim, fun)
-
-    return S
-
-
-def split_region(S, f, N, mindim, fun):
-    if N <= mindim:
-        return
-
-    for i in range(2):
-        for j in range(2):
-            subregion = f[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2]
-            if (lambda region: np.std(region) > 10 and 0 < np.mean(region) < 125)(subregion):
-                split_region(S, f, N // 2, mindim, fun)
-            else:
-                S[i * N // 2:(i + 1) * N // 2, j * N // 2:(j + 1) * N // 2] = 0
-
-
-def qtgetblk(f, S, K):
-    rows, cols = np.where(S == K)
-    if len(rows) > 0:
-        xlow, ylow = np.min(rows), np.min(cols)
-        xhigh, yhigh = np.max(rows), np.max(cols)
-        vals = f[xlow:xhigh + 1, ylow:yhigh + 1]
-        return vals, rows, cols
-    else:
-        return [], [], []
+# import cv2
+#
+# def apply_clahe(image, clip_limit, grid_size):
+#     # Convert the image to grayscale if it's not already
+#     if len(image.shape) == 3:
+#         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     else:
+#         gray_image = image
+#
+#     # Create a CLAHE object
+#     clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=grid_size)
+#
+#     # Apply CLAHE to the grayscale image
+#     enhanced_image = clahe.apply(gray_image)
+#
+#     return enhanced_image
+#
+# # Load an image
+# image = cv2.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+#
+# # Apply CLAHE with custom parameters
+# enhanced_image = apply_clahe(image, clip_limit=1.0, grid_size=(8, 8))
+#
+# # Save or display the thresholded image
+# cv2.imshow('thresholded image', enhanced_image)
+# # Wait for key press
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
-# Replace this function with your custom predicate function.
-def predicate(region):
-    return (np.std(region) > 10) and (0 < np.mean(region) < 125)
+# from skimage import io, exposure
+#
+# # Load the image
+# image = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+# gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#
+# # Apply contrast stretching
+# p2, p98 = np.percentile(gray_image, (50, 99))
+# stretched_image = exposure.rescale_intensity(gray_image, in_range=(p2, p98))
+# colormap_image = cv2.applyColorMap(stretched_image, cv2.COLORMAP_JET)
+#
+# cv2.imshow('thresholded image', colormap_image)
+# # Wait for key press
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
-def main():
-    input_image_path = './images/ctisus/ctisusBmp/adrenal_1-01.bmp'
-    mindim = 16  # Minimum dimension of quadtree regions (must be a power of 2)
 
-    # Read the input image
-    image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
+from skimage import io, exposure
 
-    # Perform split-and-merge segmentation with the custom predicate function
-    segmented_image = split_and_merge(image, mindim, predicate)
+# Load the image
+image = io.imread('./images/ctisus/ctisusBmp/adrenal_1-01.bmp')
+# gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Display the segmented image
-    plt.imshow(segmented_image, cmap='jet')
-    plt.axis('off')
-    plt.show()
-
-
-main()
-
+# Apply contrast stretching
+p2, p98 = np.percentile(image, (80, 99))
+stretched_image = exposure.rescale_intensity(image, in_range=(p2, p98))
+# colormap_image = cv2.applyColorMap(stretched_image, cv2.COLORMAP_JET)
+rgb_stretched_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2RGB)
+gray_image = cv2.cvtColor(stretched_image, cv2.COLOR_BGR2GRAY)
+cv2.imshow('gray image', gray_image)
+cv2.imshow('rgb stretched image', rgb_stretched_image)
+cv2.imshow('thresholded image', stretched_image)
+# Wait for key press
+cv2.waitKey(0)
+cv2.destroyAllWindows()

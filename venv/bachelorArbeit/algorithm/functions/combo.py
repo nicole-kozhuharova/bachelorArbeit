@@ -8,21 +8,38 @@ from medianFilterFunc import apply_median_filter, apply_sharpen_filter
 from kMeansClusteringFunc import kMeans_segment_image
 from calculatePerimeter import calculate_perimeter
 from calculateArea import calculate_area
+from contrastStretchFunc import apply_contrast_stretching
 
 # Load the image
-originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
-# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-05.bmp")
+# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-02.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-03.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-05.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-06.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-3C.bmp")
+originalImage = cv2.imread("./petCTimagesBMP/adrenal-3D.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-5B.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-7C.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-9B.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-03.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-04.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-05.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/liver-1-01.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/liver-1-02.bmp")
+
+# Apply contrast stretching
+contrastStretchedImage = apply_contrast_stretching(originalImage)
 
 # Apply the median filter
-medianFilteredImage = apply_median_filter(originalImage, 7)
+medianFilteredImage = apply_median_filter(contrastStretchedImage, 7)
 
 # Apply the sharpen filter
 sharpenFilteredImage = apply_sharpen_filter(medianFilteredImage)
 sharpenFilteredImageArr = np.array(sharpenFilteredImage)
 
 # Apply k-Means Clustering
-segments = kMeans_segment_image(sharpenFilteredImageArr, 6)
-# segments = kMeans_segment_image(sharpenFilteredImageArr, 5)
+segments = kMeans_segment_image(sharpenFilteredImageArr, 4)
+# segments = kMeans_segment_image(sharpenFilteredImageArr, 8) #for adrenal-05
 
 # Directory to save the segmented images
 output_dir = './segmentedImages/'

@@ -10,7 +10,21 @@ from calculatePerimeter import calculate_perimeter
 from calculateArea import calculate_area
 
 # Load the image
-originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# originalImage = cv2.imread("../../images/ctisus/ctisusBmp/adrenal_1-01.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-02.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-03.bmp")
+originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-05.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-1-06.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-3C.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-3D.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-5B.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-7C.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/adrenal-9B.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-03.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-04.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/duodenum-1-05.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/liver-1-01.bmp")
+# originalImage = cv2.imread("./petCTimagesBMP/liver-1-02.bmp")
 
 # Apply the median filter
 medianFilteredImage = apply_median_filter(originalImage, 7)
@@ -26,7 +40,7 @@ grayImage = cv2.cvtColor(sharpenFilteredImageArr, cv2.COLOR_BGR2GRAY)
 segment = perform_region_growing(grayImage)
 
 # Directory to save the segmented image
-cv2.imwrite('./segmentedImages/regGrowingSegment.bmp', segment)
+# cv2.imwrite('./segmentedImages/regGrowingSegment.bmp', segment)
 cv2.imshow('Region Growing Segment', segment)
 
 # Display the results

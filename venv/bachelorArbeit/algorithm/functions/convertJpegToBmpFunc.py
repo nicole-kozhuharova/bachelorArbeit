@@ -21,7 +21,7 @@ def convertJpegToBmpFunc(image_path):
     # bmp_image.save('./petCTimagesBMP/duodenum-1-03.bmp')
     # bmp_image.save('./petCTimagesBMP/duodenum-1-04.bmp')
     # bmp_image.save('./petCTimagesBMP/duodenum-1-05.bmp')
-    # bmp_image.save('./petCTimagesBMP/liver-1-01.bmp')
+    bmp_image.save('./petCTimagesBMP/liver-1-01.bmp')
     # bmp_image.save('./petCTimagesBMP/liver-1-02.bmp')
 
 # convertJpegToBmpFunc('./petCTimages/adrenal-1-01.jpg')
@@ -36,7 +36,7 @@ def convertJpegToBmpFunc(image_path):
 # convertJpegToBmpFunc('./petCTimages/adrenal-9B.gif')
 # convertJpegToBmpFunc('./petCTimages/duodenum-1-03.jpg')
 # convertJpegToBmpFunc('./petCTimages/duodenum-1-04.jpg')
-# convertJpegToBmpFunc('./petCTimages/liver-1-01.jpg')
+convertJpegToBmpFunc('./petCTimages/liver-1-01.jpg')
 # convertJpegToBmpFunc('./petCTimages/liver-1-02.jpg')
 
 
