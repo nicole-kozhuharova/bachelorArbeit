@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 def apply_contrast_stretching(img):
+    img = cv2.imread(img)
 
     # Apply contrast stretching
     p2, p98 = np.percentile(img, (80, 99))
@@ -18,7 +19,9 @@ def apply_contrast_stretching(img):
     # return rgb_stretched_image
     return stretched_image
 
+# originalImage = cv2.imread('C:/Users/Nicole/PycharmProjects/bachelorArbeit/venv/bachelorArbeit/algorithm/functions/petCTimagesBMP/adrenal-1-01.bmp')
 
+# apply_contrast_stretching('C:/Users/Nicole/PycharmProjects/bachelorArbeit/venv/bachelorArbeit/algorithm/functions/petCTimagesBMP/adrenal-1-01.bmp')
 # cv2.imshow('stretched image', stretched_image)
 # # Wait for key press
 # cv2.waitKey(0)
