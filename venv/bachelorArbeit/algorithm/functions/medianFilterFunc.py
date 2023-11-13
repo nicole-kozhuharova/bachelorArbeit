@@ -6,6 +6,9 @@ def apply_median_filter(img, ksize):
     # Apply the median filter
     img = cv2.medianBlur(img, ksize)
 
+    cv2.imshow('median filtered image', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return img
 
 def apply_sharpen_filter(image):
@@ -14,6 +17,10 @@ def apply_sharpen_filter(image):
 
     # Apply the sharpen filter
     sharpen = pil_img.filter(ImageFilter.SHARPEN)
+    sharpen = np.array(sharpen)
 
+    cv2.imshow('median filtered image', sharpen)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     return sharpen
 

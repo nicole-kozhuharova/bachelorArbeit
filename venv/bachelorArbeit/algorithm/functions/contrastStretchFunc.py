@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 def apply_contrast_stretching(img):
-    img = cv2.imread(img)
+    # img = cv2.imread(img)
 
     # Apply contrast stretching
     p2, p98 = np.percentile(img, (80, 99))
